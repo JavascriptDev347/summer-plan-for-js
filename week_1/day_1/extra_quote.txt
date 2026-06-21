@@ -1,1 +1,43 @@
-This file you can write quotes
+1. JS Engine: How Your Code Actually Runs
+┌─────────────────────────────────────────┐
+│           V8 Engine Architecture        │
+├─────────────────────────────────────────┤
+│  Parser → AST → Ignition (Bytecode)     │
+│       ↓                                 │
+│  TurboFan (Optimized Machine Code)      │
+│       ↓                                 │
+│  Garbage Collector (Orinoco, Oilpan)    │
+└─────────────────────────────────────────┘
+
+The Two-Compiler Strategy (Crankshaft legacy → TurboFan):
+
+1. Ignition (Bytecode): Quickly generates bytecode. Your code runs immediately but slower. This handles the "cold start" and unpredictable code paths.
+2. TurboFan (Optimizing Compiler): Watches your code run, makes speculative optimizations based on types it observes, then generates highly optimized machine code.
+
+
+The Hidden Danger: Deoptimization
+
+TurboFan assumes types are stable. When you violate this assumption, the engine deoptimizes—throws away optimized machine code and falls back to bytecode. This is expensive.
+
+// BAD: Hidden class transition + deoptimization
+function add(x, y) {
+    return x + y;
+}
+
+add(1, 2);      // TurboFan: "x and y are numbers, I'll optimize!"
+add(1, 2);      // Still numbers, optimization holds
+add("a", "b");  // DEOPT! Types changed. Back to bytecode.
+add(3, 4);      // Might re-optimize, but the damage is done
+
+
+// BAD: Multiple hidden class transitions
+function Point(x, y) {
+    this.x = x;  // Hidden class #1 created
+    this.y = y;  // Hidden class #2 created (transition from #1)
+}
+
+// GOOD: Pre-declare all properties
+function Point(x, y) {
+    this.x = x;  // Hidden class #1
+    this.y = y;  // Still hidden class #1 (no transition!)
+}
