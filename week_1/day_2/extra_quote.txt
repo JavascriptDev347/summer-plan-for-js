@@ -1,1 +1,3 @@
-this file you can write quotes
+
+Javascript nima ?
+JavaScript - bu dasturlash tili bo’lib, u veb-sahifalarga interaktivlik qo’shish uchun ishlatiladi. U brauzerda ishlaydigan til bo’lib, dinamik kontent yaratish, tugmalar, shakllar bilan ishlash va animatsiyalarni amalga oshirish imkonini beradi. JavaScript, shuningdek, server tomonida ham Node.js orqali ishlatiladi. Bu tilning asosiy xususiyatlari - dinamik, obyektga yo’naltirilgan funksional dasturlashga moslashuvchan bo’lishidir.
